@@ -49,7 +49,7 @@ def fun_res(first_cell_type_expressions_path, second_cell_type_expressions_path,
         "ci_test_results": ci_test_results,
         "z_test_results": z_test_results,
         "z_test_p_values": z_test_p_values,
-        "mean_diff": mean_diff
+        "mean_diff_(table1-table2)": mean_diff
     }
 
     results = pd.DataFrame(results)
