@@ -45,6 +45,7 @@ def fun_res(first_cell_type_expressions_path, second_cell_type_expressions_path,
     # adjustment
     if adj_pval_method:
         z_test_p_values = multipletests(z_test_p_values, alpha=0.05, method=adj_pval_method)[1]
+        z_test_results = z_test_p_values < 0.05
 
     results = {
         "genes": genes,
