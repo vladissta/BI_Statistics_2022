@@ -17,7 +17,6 @@ def fun_res(first_cell_type_expressions_path, second_cell_type_expressions_path,
     mean_diff = []
 
     for i in first_table.columns:
-
         genes.append(i)
 
         # ci_test_results
@@ -44,18 +43,22 @@ def fun_res(first_cell_type_expressions_path, second_cell_type_expressions_path,
 
     # adjustment
     if adj_pval_method:
-        z_test_p_values = multipletests(z_test_p_values, alpha=0.05, method=adj_pval_method)[1]
-        z_test_results = z_test_p_values < 0.05
+        z_test_p_values_adj = multipletests(z_test_p_values, alpha=0.05, method=adj_pval_method)[1]
+        z_test_results = z_test_p_values_adj < 0.05
 
     results = {
         "genes": genes,
+        "mean_diff_(table1-table2)": mean_diff,
         "ci_test_results": ci_test_results,
         "z_test_results": z_test_results,
         "z_test_p_values": z_test_p_values,
-        "mean_diff_(table1-table2)": mean_diff
     }
 
     results = pd.DataFrame(results)
+
+    if adj_pval_method:
+        results['z_test_p_values_adj'] = z_test_p_values_adj
+
     results.to_csv(f"{save_results_table}.csv")
 
 
