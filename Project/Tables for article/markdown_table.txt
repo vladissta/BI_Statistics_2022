@@ -1,14 +1,17 @@
-|                                  |   Female |   Male |
-|:---------------------------------|---------:|-------:|
-| ('Height', 'Minimum value')      |   137    | 142    |
-| ('Height', 'Average value')      |   166.53 | 178.67 |
-| ('Height', 'Maximum value')      |   194    | 211    |
-| ('Height', 'Standard deviation') |     6.03 |   6.59 |
-| ('Weight', 'Minimum value')      |    32    |  47    |
-| ('Weight', 'Average value')      |    59.76 |  76.36 |
-| ('Weight', 'Maximum value')      |    96    | 145    |
-| ('Weight', 'Standard deviation') |     7.06 |  10.33 |
-| ('Age', 'Minimum value')         |    11    |  12    |
-| ('Age', 'Average value')         |    24.01 |  25.51 |
-| ('Age', 'Maximum value')         |    48    |  58    |
-| ('Age', 'Standard deviation')    |     4.69 |   4.75 |
+|                                  |   Female |     Male | T-test              |
+|:---------------------------------|---------:|---------:|:--------------------|
+| ('Height', 'Minimum value')      |   137    |   142    |                     |
+| ('Height', 'Average value')      |   166.53 |   178.67 | Statistic = -257.05 |
+| ('Height', 'Maximum value')      |   194    |   211    | p-value = 0.0       |
+| ('Height', 'Standard deviation') |     6.03 |     6.59 |                     |
+| ('Height', 'Total values')       | 13521    | 26722    |                     |
+| ('Weight', 'Minimum value')      |    32    |    47    |                     |
+| ('Weight', 'Average value')      |    59.76 |    76.36 | Statistic = -271.56 |
+| ('Weight', 'Maximum value')      |    96    |   145    | p-value = 0.0       |
+| ('Weight', 'Standard deviation') |     7.06 |    10.33 |                     |
+| ('Weight', 'Total values')       | 13332    | 26204    |                     |
+| ('Age', 'Minimum value')         |    11    |    12    |                     |
+| ('Age', 'Average value')         |    24.01 |    25.51 | Statistic = -93.25  |
+| ('Age', 'Maximum value')         |    48    |    58    | p-valuec = 0.0      |
+| ('Age', 'Standard deviation')    |     4.69 |     4.75 |                     |
+| ('Age', 'Total values')          | 15071    | 33199    |                     |

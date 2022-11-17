@@ -6,7 +6,7 @@
 
 # ### Importing requirements
 
-# In[1]:
+# In[75]:
 
 
 import numpy as np
@@ -15,6 +15,7 @@ import glob
 import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy.stats as stats
+import statsmodels.api as sm
 
 
 # ### Function that rquires path, file extension and separator to parse all files in path and concate them all in one dataframe
@@ -136,7 +137,7 @@ df['Sex'].value_counts().sort_index()
 df.loc[df.Sex == 'G']
 
 
-# _2 athletes turned out to be with gender "G" - with all my respect for minorities, I can't leave it this way, because in the years in which these athletes performed, gender-non-decided people did not perform (especially from Russia and Czechoslovakia). So i changed the sex according to hi sports and names_
+# _2 athletes turned out to be with gender "G" - with all my respect for minorities, I can't leave it this way, because in the years in which these athletes performed, gender-non-decided people did not perform (especially from Russia and Czechoslovakia). So i changed the sex according to their sports and names_
 
 # In[17]:
 
@@ -230,12 +231,10 @@ df.loc[(df.Sex == 'F') &
 
 # ### Heaviest athlete's sport in at the 2006 Olympics
 
-# In[28]:
+# In[200]:
 
 
-df.loc[
-    (df.Weight == df.loc[df.Year == 2006].Weight.max()) &
-    (df.Year == 2006)].Sport
+print(f"Sport of heviest athlete: {(df.loc[(df.Weight == df.loc[df.Year == 2006].Weight.max()) & (df.Year == 2006)].Sport).reset_index().Sport[0]}")
 
 
 # ### Number of gold medals which were received by women from 1980 to 2010
@@ -273,10 +272,10 @@ ages_df
 
 # ### How much has the number of sports at the 2002 Olympics more compared to the 1994 Olympic Games
 
-# In[32]:
+# In[182]:
 
 
-df.loc[df.Year == 2002].Sport.unique().size - df.loc[df.Year == 1994].Sport.unique().size
+print(f" In 2002 Olympics there were {df.loc[df.Year == 2002].Sport.unique().size - df.loc[df.Year == 1994].Sport.unique().size} more sports then in 1994 Olympics")
 
 
 # ### The top 3 countries for each type of medals for the Winter and Summer Olympics
@@ -302,43 +301,59 @@ Height_z_scores
 # ### Height_min_max_scaled variable with the values of the Height variable after applying min-max normalization to it.
 # ##### Optional
 
-# In[35]:
-
-
-Height = df.Height.dropna()
-Height_min_max_scaled = (Height - Height.min())/(Height.max() - Height.min())
-Height_min_max_scaled
-
-
 # ### Compared the height, weight and age of men and women who participated in the Winter Olympic Games. 
 # ##### The results designed to use them for the article.
 
-# In[36]:
+# _As we have huge data (big amount of values), t-test could be applied_
+
+# In[148]:
 
 
-new_df = df.loc[df.Season == 'Winter',['Sex','Height','Weight', 'Age']].groupby('Sex', as_index=False).agg(['min','mean', 'max', 'std']).round(2).transpose()
+t_height = stats.ttest_ind(df.loc[df.Sex == 'F', 'Height'].dropna(),
+df.loc[df.Sex == 'M', 'Height'].dropna())
+t_weight = stats.ttest_ind(df.loc[df.Sex == 'F', 'Weight'].dropna(),
+df.loc[df.Sex == 'M', 'Weight'].dropna())
+t_age = stats.ttest_ind(df.loc[df.Sex == 'F', 'Age'].dropna(),
+df.loc[df.Sex == 'M', 'Age'].dropna())
+
+
+# In[160]:
+
+
+new_df = df.loc[df.Season == 'Winter',['Sex','Height','Weight', 'Age']].groupby('Sex', as_index=False).agg(['min','mean', 'max', 'std', "count"]).round(2).transpose()
 new_df = new_df.rename(columns = {'F':'Female', 'M':'Male'}, 
-                       index = {'min':'Minimum value', 'max':'Maximum value', 'std':'Standard deviation', 'mean':'Average value'})
+                       index = {'min':'Minimum value', 
+                                'max':'Maximum value',
+                                'std':'Standard deviation',
+                                'mean':'Average value',
+                                'count': "Total values"})
 new_df.rename_axis()
 new_df.rename_axis(["Characteristic", 'Statistics'], axis='index', inplace=True)
 new_df.rename_axis("Sex of athlete:", axis="columns", inplace=True)
 
+new_df['T-test'] = ''
+new_df.loc[('Height', 'Average value'), 'T-test'] = f' Statistic = {t_height[0].round(2)}'
+new_df.loc[('Weight', 'Average value'), 'T-test'] = f'Statistic = {t_weight[0].round(2)}'
+new_df.loc[('Age', 'Average value'), 'T-test'] = f'Statistic = {t_age[0].round(2)}'
 
-# In[37]:
+new_df.loc[('Height', 'Maximum value'), 'T-test'] = f'p-value = {t_height[1].round(2)}'
+new_df.loc[('Weight', 'Maximum value'), 'T-test'] = f'p-value = {t_weight[1].round(2)}'
+new_df.loc[('Age', 'Maximum value'), 'T-test'] = f'p-valuec = {t_age[1].round(2)}'
 
 
-s1 = new_df.style.format(formatter={'Female': "{:.2f}", 'Male': "{:.2f}"})
+# In[161]:
+
+
+s1 = new_df.style.format(formatter={'Female': "{:.1f}", 'Male': "{:.1f}", 'T-test p-value': "{:.5f}"})
 s1 = s1.set_table_styles([{'selector': 'th', 'props': 'text-align: center;'},
                     {'selector': 'th', 'props': 'text-align: center;'},
                     {'selector': '', 'props': 'border: 1px solid #000066;'},
-                    {'selector': 'td', 'props': 'border: 1px solid #000066;'},
-                    {'selector': 'th', 'props': 'border: 1px solid #000066;'},
                      {'selector': 'caption','props': 'caption-side: bottom; font-size:1.25em;'}],overwrite=False, axis=1)
 
 s1.set_caption("Table 1. Height, Weight and Age of Male and Female athletes on winter olympics.")
 
 for l0 in ['Height', 'Weight', 'Age']:
-    s1 = s1.set_table_styles({(l0, 'Standard deviation'): [{'selector': '', 'props': 'border-bottom: 2px solid black;'}], 
+    s1 = s1.set_table_styles({(l0, 'Total values'): [{'selector': '', 'props': 'border-bottom: 2px solid black;'}], 
                         (l0, 'Minimum value'): [{'selector': '.level0', 'props': 'border-bottom: 2px solid black;'}],
                         (l0, 'Minimum value'): [{'selector': '.level0', 'props': 'border: 2px solid black;'}]},
                         overwrite=False, axis=1)
@@ -348,12 +363,12 @@ s1
 
 # ##### Making tables for article
 
-# In[38]:
+# In[162]:
 
 
-print(s1.to_latex(), file = open('latex_table_with_style.txt', 'w'))
-print(s1.to_latex(), file = open('latex_table.txt', 'w'))
-print(new_df.to_markdown(), file = open('markdown_table.txt', 'w'))
+print(s1.to_latex(), file = open('../Tables for article/latex_table_with_style.txt', 'w'))
+print(s1.to_latex(), file = open('../Tables for article/latex_table.txt', 'w'))
+print(new_df.to_markdown(), file = open('../Tables for article/markdown_table.txt', 'w'))
 
 
 # ### Let's compare Medal and Team variables
@@ -363,8 +378,7 @@ print(new_df.to_markdown(), file = open('markdown_table.txt', 'w'))
 # In[39]:
 
 
-from scipy.stats import ttest_ind, mannwhitneyu, pearsonr, levene, bartlett
-import statsmodels.api as sm
+
 
 
 # In[40]:
@@ -410,7 +424,7 @@ y=num_sport_medals['Number of sports participated']
 x = sm.add_constant(x)
 
 
-# _Deleting deviations_
+# _Deleting deviations accroding to cook's distances_
 
 # In[45]:
 
@@ -430,16 +444,20 @@ cooks = model.get_influence().cooks_distance
 df_wo_devs = num_sport_medals[cooks[1] > 0.05]
 
 
-# In[48]:
+# _Checking Homoscedacity using barlett and levene tests_
+
+# In[179]:
 
 
+print('p-value for levene test is')
 levene(df_wo_devs['Number of medals'],
 df_wo_devs['Number of sports participated']).pvalue
 
 
-# In[49]:
+# In[180]:
 
 
+print('p-value for bartlett test is')
 bartlett(df_wo_devs['Number of medals'],
 df_wo_devs['Number of sports participated']).pvalue
 
@@ -452,16 +470,9 @@ df_wo_devs['Number of sports participated']).pvalue
 sns.scatterplot(x=df_wo_devs['Number of medals'], y=df_wo_devs['Number of sports participated']);
 
 
-# In[51]:
-
-
-pearsonr(df_wo_devs['Number of medals'],
-df_wo_devs['Number of sports participated']).statistic
-
-
 # ##### Let's see the plots
 
-# In[74]:
+# In[52]:
 
 
 fig, ax = plt.subplots(1, 3, figsize = (14, 4))
@@ -484,158 +495,9 @@ ax[2].tick_params(axis='y', which='major', labelsize=7)
 # 
 # In common we can conclude that number of sports in which NOC participate could affect the number of medals they have. But there are some deviations, where some NOCs are professionals in their small amount of sports and NOCs that could not find they successufull sport  
 
-# ### Some additional hypothesis
+# ## Some additional hypothesis
 
-# #### Are the differences in height in women and men significant?
-
-# In[53]:
-
-
-f_height = df.loc[df.Sex == 'F'].Height.dropna()
-
-
-# In[54]:
-
-
-m_height = df.loc[df.Sex == 'M'].Height.dropna()
-
-
-# _Checking distribution_
-
-# In[55]:
-
-
-fig, axes = plt.subplots(1,2,figsize = (8,3))
-
-sns.histplot(data=f_height, ax=axes[0], binwidth=1);
-sns.histplot(data=m_height, ax=axes[1], binwidth=1);
-
-axes[0].set_title('Female');
-axes[1].set_title('Male');
-
-axes[0].tick_params(axis='both', which='major', labelsize=8);
-axes[1].tick_params(axis='both', which='major', labelsize=8);
-
-
-# _Checking common statistics_
-
-# In[56]:
-
-
-f_height.describe()
-
-
-# In[57]:
-
-
-m_height.describe() 
-
-
-# **There are a lot of values and distribution seems to be normal, we use a t-test**
-
-# In[58]:
-
-
-t = ttest_ind(m_height, f_height)
-t.pvalue
-
-
-# In[59]:
-
-
-mann = mannwhitneyu(m_height, f_height)
-mann.pvalue
-
-
-# **pvalue is very small in both tests -> Significantly different**
-
-# #### Let's check for weight and age sticking to the pipeline described above
-
-# In[60]:
-
-
-m_weight = df.loc[df.Sex == 'M'].Weight.dropna()
-f_weight = df.loc[df.Sex == 'F'].Weight.dropna()
-m_age = df.loc[df.Sex == 'M'].Age.dropna()
-f_age = df.loc[df.Sex == 'F'].Age.dropna()
-
-
-# **_Weight_**
-
-# In[61]:
-
-
-fig, axes = plt.subplots(1,2,figsize = (8,3))
-
-sns.histplot(data=f_weight, ax=axes[0], binwidth=2);
-sns.histplot(data=m_weight, ax=axes[1], binwidth=2);
-
-axes[0].set_title('Female');
-axes[1].set_title('Male');
-
-axes[0].tick_params(axis='both', which='major', labelsize=8);
-axes[1].tick_params(axis='both', which='major', labelsize=8);
-
-
-# In[62]:
-
-
-m_weight.describe()
-
-
-# In[63]:
-
-
-f_weight.describe()
-
-
-# In[64]:
-
-
-t = ttest_ind(m_weight, f_weight)
-t.pvalue
-
-
-# **_Age_**
-
-# In[65]:
-
-
-fig, axes = plt.subplots(1,2,figsize = (8,3))
-
-sns.histplot(data=f_age, ax=axes[0], binwidth=1);
-sns.histplot(data=m_age, ax=axes[1], binwidth=1);
-
-axes[0].set_title('Female');
-axes[1].set_title('Male');
-
-axes[0].tick_params(axis='both', which='major', labelsize=8);
-axes[1].tick_params(axis='both', which='major', labelsize=8);
-
-
-# In[66]:
-
-
-m_age.describe()
-
-
-# In[67]:
-
-
-f_age.describe()
-
-
-# In[68]:
-
-
-t = ttest_ind(m_age, f_age)
-t.pvalue
-
-
-# **Both the average weight and average age of athletes of different sexes are significantly different**  
-# _Both distributions seems normal and number of values was huge_
-
-# #### Is the average number of medals in Women and Men significant?
+# ### Is the average number of medals in Women and Men significant?
 
 # In[69]:
 
@@ -664,15 +526,52 @@ m_medals.describe()
 f_medals.describe()
 
 
-# _It is better to use another test since distribution significantly not normal_
+# _It is better to use another test (Mann-Whitney) since distribution significantly not normal_
 
-# In[73]:
+# In[177]:
 
 
 mann = mannwhitneyu(m_medals, f_medals)
-mann.pvalue
+print(f'p-value is {mann.pvalue}')
 
 
 # **Differences still significant.**
 
 # _I am not sexist. It were the most common tests that i vave in my mind with comparison of 2 groups_
+
+# ### Is weights of swimmers is significantly differ from footballer's?
+
+# In[170]:
+
+
+footbalers_weights = df.loc[(df.Sport == 'Football')].Weight.dropna()
+swimmers_weights = df.loc[(df.Sport == 'Swimming')].Weight.dropna()
+
+
+# In[172]:
+
+
+footbalers_weights.describe()
+
+
+# In[173]:
+
+
+swimmers_weights.describe()
+
+
+# _There are almost no differences yet!_
+
+# In[202]:
+
+
+print(f"p-value = {ttest_ind(swimmers_weights, footbalers_weights).pvalue}")
+
+
+# _They have the same weight! Is that mean that footballers would not drown..?_
+
+# In[ ]:
+
+
+
+
