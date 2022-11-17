@@ -1,0 +1,14 @@
+|                                  |   Female |   Male |
+|:---------------------------------|---------:|-------:|
+| ('Height', 'Minimum value')      |   137    | 142    |
+| ('Height', 'Average value')      |   166.53 | 178.67 |
+| ('Height', 'Maximum value')      |   194    | 211    |
+| ('Height', 'Standard deviation') |     6.03 |   6.59 |
+| ('Weight', 'Minimum value')      |    32    |  47    |
+| ('Weight', 'Average value')      |    59.76 |  76.36 |
+| ('Weight', 'Maximum value')      |    96    | 145    |
+| ('Weight', 'Standard deviation') |     7.06 |  10.33 |
+| ('Age', 'Minimum value')         |    11    |  12    |
+| ('Age', 'Average value')         |    24.01 |  25.51 |
+| ('Age', 'Maximum value')         |    48    |  58    |
+| ('Age', 'Standard deviation')    |     4.69 |   4.75 |

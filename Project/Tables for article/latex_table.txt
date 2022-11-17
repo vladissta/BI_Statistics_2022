@@ -1,0 +1,31 @@
+\begin{table}
+\caption{Table 1. Height, Weight and Age of Male and Female athletes on winter olympics.}
+\th1px solid #000066
+\th1px solid #000066
+\1px solid #000066
+\td1px solid #000066
+\th1px solid #000066
+\.row32px solid black
+\.level0.row02px solid black
+\.row72px solid black
+\.level0.row42px solid black
+\.row112px solid black
+\.level0.row82px solid black
+\begin{tabular}{llrr}
+ & Sex of athlete: & Female & Male \\
+Characteristic & Statistics &  &  \\
+\multirow[c]{4}{*}{Height} & Minimum value & 137.00 & 142.00 \\
+ & Average value & 166.53 & 178.67 \\
+ & Maximum value & 194.00 & 211.00 \\
+ & Standard deviation & 6.03 & 6.59 \\
+\multirow[c]{4}{*}{Weight} & Minimum value & 32.00 & 47.00 \\
+ & Average value & 59.76 & 76.36 \\
+ & Maximum value & 96.00 & 145.00 \\
+ & Standard deviation & 7.06 & 10.33 \\
+\multirow[c]{4}{*}{Age} & Minimum value & 11.00 & 12.00 \\
+ & Average value & 24.01 & 25.51 \\
+ & Maximum value & 48.00 & 58.00 \\
+ & Standard deviation & 4.69 & 4.75 \\
+\end{tabular}
+\end{table}
+
