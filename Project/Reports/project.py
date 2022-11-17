@@ -34,7 +34,7 @@ def concat_files(path, separator, file_extension):
 # In[3]:
 
 
-df = concat_files('athlete_events', ',', 'csv')
+df = concat_files('../athlete_events', ',', 'csv')
 
 
 # In[4]:
