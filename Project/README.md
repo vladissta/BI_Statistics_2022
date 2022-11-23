@@ -19,12 +19,12 @@ pip install -r requirements.txt
 1) **Reports** directory
    - Contains report in .py, .ipynb, .html formats
 
-2) **athlete events** directory
-    - Contains data to analyze: data about olympic athletes in past 120 years.
+2) **data** directory  
+    - **athlete events** directory  
+	Contains data to analyze: data about olympic athletes in past 120 years.  
+    - **Tables for article** directory  
+	Contains TXT files with _LaTeX_ and _Markdown_ formats of table from one of the tasks to use them on articles  
 
 3) **Info_files** directory contains
     - PDF file with instructions and tasks to do (_Project_1_pipeline.pdf_)
     - TXT file with description of data from **athlete events** directory  (_features_description.txt_)
-
-4) **Tables for article** directory
-    - Contains TXT files with _LaTeX_ and _Markdown_ formats of table from one of the tasks to use them on articles
