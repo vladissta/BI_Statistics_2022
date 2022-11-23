@@ -20,7 +20,7 @@ pip install -r requirements.txt
    - Contains report in .py, .ipynb, .html formats
 
 2) **data** directory  
-    - **athlete events** directory  
+    - **athlete_events** directory  
 	Contains data to analyze: data about olympic athletes in past 120 years.  
     - **Tables_for_article** directory  
 	Contains TXT files with _LaTeX_ and _Markdown_ formats of table from one of the tasks to use them on articles  
