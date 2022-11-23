@@ -17,7 +17,7 @@ pip install -r requirements.txt
 **requirements.txt** - file with requirement python packages. Use command above to install them
 
 1) **Reports** directory
-   - Contains report in .py, .ipynb, .html formats
+   - Contains report in .py, .ipynb, .html and .PDF formats
 
 2) **data** directory  
     - **athlete_events** directory  
