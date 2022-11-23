@@ -33,7 +33,7 @@ def concat_files(path, separator, file_extension):
 # In[3]:
 
 
-df = concat_files('../athlete_events', ',', 'csv')
+df = concat_files('../data/athlete_events', ',', 'csv')
 
 
 # In[4]:
@@ -303,7 +303,7 @@ medal_top_df
 
 # ###  Height_z_scores variable with the values of the Height variable after its standardization
 
-# In[76]:
+# In[36]:
 
 
 df['Height_z_scores'] = (df.Height - df.Height.mean()) / df.Height.std()
@@ -313,7 +313,7 @@ df.Height_z_scores
 # ### Height_min_max_scaled variable with the values of the Height variable after applying min-max normalization to it.
 # ##### Optional
 
-# In[77]:
+# In[37]:
 
 
 df['Height_min_max_scaled'] = (df.Height - df.Height.min()) / (df.Height.max() - df.Height.min())
@@ -325,7 +325,7 @@ df['Height_min_max_scaled']
 
 # _As we have huge data (big amount of values), t-test could be applied_
 
-# In[78]:
+# In[38]:
 
 
 t_height = stats.ttest_ind(df.loc[df.Sex == 'F', 'Height'].dropna(),
@@ -336,7 +336,7 @@ t_age = stats.ttest_ind(df.loc[df.Sex == 'F', 'Age'].dropna(),
 df.loc[df.Sex == 'M', 'Age'].dropna())
 
 
-# In[79]:
+# In[39]:
 
 
 new_df = df.loc[df.Season == 'Winter',['Sex','Height','Weight', 'Age']].groupby('Sex', as_index=False).agg(['min','mean', 'max', 'std', "count"]).round(2).transpose()
@@ -360,7 +360,7 @@ new_df.loc[('Weight', 'Maximum value'), 'T-test'] = f'p-value = {t_weight[1].rou
 new_df.loc[('Age', 'Maximum value'), 'T-test'] = f'p-valuec = {t_age[1].round(2)}'
 
 
-# In[80]:
+# In[40]:
 
 
 s1 = new_df.style.format(formatter={'Female': "{:.1f}", 'Male': "{:.1f}", 'T-test p-value': "{:.5f}"})
@@ -382,19 +382,19 @@ s1
 
 # ##### Making tables for article
 
-# In[81]:
+# In[41]:
 
 
-print(s1.to_latex(), file = open('../Tables for article/latex_table_with_style.txt', 'w'))
-print(s1.to_latex(), file = open('../Tables for article/latex_table.txt', 'w'))
-print(new_df.to_markdown(), file = open('../Tables for article/markdown_table.txt', 'w'))
+print(s1.to_latex(), file = open('../data/Tables_for_article/latex_table_with_style.txt', 'w'))
+print(s1.to_latex(), file = open('../data/Tables_for_article/latex_table.txt', 'w'))
+print(new_df.to_markdown(), file = open('../data/Tables_for_article/markdown_table.txt', 'w'))
 
 
 # ### Let's compare Medal and Team variables
 
 # _Making top Teams with the most number of medals of all time_
 
-# In[82]:
+# In[42]:
 
 
 medals = df.loc[df.Medal.notna()].groupby('Team').Medal.count().reset_index().sort_values(by='Medal', ascending=False)
@@ -407,7 +407,7 @@ num_medals.head(10)
 
 # #### How many kinds of sports Teams is participated in?
 
-# In[83]:
+# In[43]:
 
 
 num_sport = df.groupby('Team').Sport.nunique()
@@ -415,7 +415,7 @@ num_sport_medals = num_medals.merge(num_sport, on='Team').rename(columns={'Sport
 num_sport_medals
 
 
-# In[84]:
+# In[44]:
 
 
 sns.scatterplot(x=num_sport_medals['Number of medals'], y=num_sport_medals['Number of sports participated']);
@@ -423,7 +423,7 @@ sns.scatterplot(x=num_sport_medals['Number of medals'], y=num_sport_medals['Numb
 
 # _It seemas like it is better to use spearman test (nonlinear, non-homoscedastic etc.)_
 
-# In[85]:
+# In[45]:
 
 
 print(f"Spearman's r is {stats.spearmanr(num_sport_medals['Number of medals'], num_sport_medals['Number of sports participated']).correlation}")
@@ -431,7 +431,7 @@ print(f"Spearman's r is {stats.spearmanr(num_sport_medals['Number of medals'], n
 
 # ##### Let's see some additional plots !
 
-# In[86]:
+# In[46]:
 
 
 fig, ax = plt.subplots(1, 2, figsize = (14, 4))
@@ -459,14 +459,14 @@ ax[1].tick_params(axis='y', which='major', labelsize=7)
 
 # ### Is the average number of medals in Women and Men significant?
 
-# In[87]:
+# In[47]:
 
 
 m_medals = df.loc[(df.Sex == 'M') & (df.Medal.notnull())].groupby('Name').Medal.count()
 f_medals = df.loc[(df.Sex == 'F') & (df.Medal.notnull())].groupby('Name').Medal.count()
 
 
-# In[88]:
+# In[48]:
 
 
 f_medals.value_counts()
@@ -474,13 +474,13 @@ f_medals.value_counts()
 
 # _Distribution is not normal, but number of values is still big_
 
-# In[89]:
+# In[49]:
 
 
 m_medals.describe()
 
 
-# In[90]:
+# In[50]:
 
 
 f_medals.describe()
