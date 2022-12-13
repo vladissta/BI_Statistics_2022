@@ -1,3 +1,4 @@
 *.ipynb_checkpoints
 *.gitignor
 *.DS_Store
+.Rproj.user
